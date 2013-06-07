@@ -5,7 +5,7 @@ Created on Mon May 20 13:19:21 2013
 @author: hxu
 """
 ####################################################
-#get current data from neracoos OpenDap,generate a df which includ time,lat,lon.current speed,current direction,u and v.
+#get surface current data from neracoos OpenDap,generate a df which includ time,lat,lon.current speed,current direction,u and v.
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
@@ -30,7 +30,7 @@ for index_site in range(len(sites)):
     id_s,id_e0,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
     if mintime=='':   
         histvsreal='1' #"histvsreal" can help us judge if this  site has historical data.
-        url='http://neracoos.org:8080/opendap/'+sites[index_site]+'/'+sites[index_site]+'.'+model+'.realtime.'+depths[index_site]+'m.nc?'     
+        url='http://neracoos.org:8080/opendap/'+sites[index_site]+'/'+sites[index_site]+'.'+model+'.realtime.nc?'     
         id_s,id_e0,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
         print 'realtime from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
     else:
@@ -43,19 +43,19 @@ for index_site in range(len(sites)):
         print "According to your input, there is no data here"    
     if histvsreal<>'1':
       if   maxtime<edtime_n: #make sure if we need a realtime data
-        url='http://neracoos.org:8080/opendap/'+sites[index_site]+'/'+sites[index_site]+'.'+model+'.realtime.'+depths[index_site]+'m.nc?'     
+        url='http://neracoos.org:8080/opendap/'+sites[index_site]+'/'+sites[index_site]+'.'+model+'.realtime.nc?'     
         id_s,id_e,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
         if id_e<>'':     
            (period_str,current_all)=get_neracoos_current_data(url,id_s,id_e,id_max_url)  #get data from web neracoos
            print 'realtime from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
            #df = DataFrame(np.array(depth_temp),index=period_str,columns=['                depth','      temp']).append(df)
            if id_e0=='':
-              df = DataFrame(np.array(current),index=period_str,columns=['current','direction','u','v' ])
+              df = DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])
            else:              
-              df = df.append(DataFrame(np.array(current),index=period_str,columns=['current','direction','u','v' ])) #combine them in DataFrame 
+              df = df.append(DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])) #combine them in DataFrame 
     df.plot()
     df.to_csv('current_'+sites[index_site]+'.csv') #save it to a csv file
-plt.show()
+    plt.show()
 
 
 

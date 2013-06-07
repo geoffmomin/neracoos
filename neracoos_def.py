@@ -4,6 +4,9 @@ Created on Tue May 14 10:32:46 2013
 
 @author: hxu
 """
+import sys
+pydir1='/home/hxu/epd73/epd-7.3-2-rh5-x86_64/lib/python2.7/site-packages'
+sys.path.append(pydir1)
 from matplotlib.dates import date2num, num2date
 import datetime as dt
 
@@ -11,7 +14,7 @@ import matplotlib.mlab as ml
 import numpy as np
 from pydap.client import open_url
 from pandas import *
-
+import netCDF4
 def get_neracoos_ctl(inputfilename):# get data input from a txt file
    f=open(inputfilename)  
    select=f.readline()
@@ -164,9 +167,36 @@ def depth_select(sites,i_mindepth,i_maxdepth): #select depth which we have in we
             print sites[k]+' is not here,please check  your input '
         '''
     return depths,site_d
+def depth_select_ADCP(sites,i_mindepth,i_maxdepth):
+    depths=[]
+    site_d=[]   
+    for k in range(len(sites)):
+        if sites[k]=='A01' or 'B01' or 'E01' or 'E02' or 'F01' or 'I01' or 'M01':
+            
+            depth_box=[10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 74, 78, 82, 86, 90, 94, 98, 102, 106, 110, 114, 118, 122, 126]
+            depth_index=[i for i,x in enumerate(depth_box) if i_maxdepth >= x >=i_mindepth] #split sites in different depth
+            for i in depth_index:
+                depths.append(str(depth_box[i]))
+                site_d.append(sites[k])       
+        if sites[k]=='D02':
+            depth_box=[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]
+            depth_index=[i for i,x in enumerate(depth_box) if i_maxdepth >= x >=i_mindepth]
+            for i in depth_index:
+                depths.append(str(depth_box[i]))
+                site_d.append(sites[k])
+        if sites[k]=='N01':
+            depth_box=[16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248]
+            depth_index=[i for i,x in enumerate(depth_box) if i_maxdepth >= x >=i_mindepth]
+            for i in depth_index:
+                depths.append(str(depth_box[i]))
+                site_d.append(sites[k])
+    return depths,site_d,depth_index    
 def get_neracoos_temp_data(url,id_s,id_e,id_max_url): #get temperature data from neracoos.
-          url=url+'temperature[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
-          database=open_url(url)['temperature'][int(id_s):int(id_e)]
+          url1=url+'temperature[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],salinity[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
+          database=open_url(url1)['temperature'][int(id_s):int(id_e)]
+          database_s=open_url(url1)['salinity'][int(id_s):int(id_e)]
+          salinity=database_s['salinity']
+          salinity=salinity[0:].tolist()
           #lat=database['lat']
           #lat=round(lat[0],2)
           #lon=database['lon']
@@ -180,13 +210,13 @@ def get_neracoos_temp_data(url,id_s,id_e,id_max_url): #get temperature data from
     
           for i in range(len(period)): #convert format to list
              period_str.append(dt.datetime.strftime(period[i],'%Y-%m-%d-%H-%M'))
-           
-             depth_temp.append([round(depth[0],1),round(temp[i][0][0][0],2)])
-          temp1=[] #get rid of bad data
+             #period_str.append(period[i])
+             depth_temp.append([round(depth[0],1),round(temp[i][0][0][0],2),round(salinity[i][0][0][0],2)])
+          temp1,salinity1=[],[] #get rid of bad data
           for i in range(len(depth_temp)):
             temp1.append(depth_temp[i][1])
-      
-          id_bad=ml.find((np.array(temp1)>30) | (np.array(temp1)<-4))
+            salinity1.append(depth_temp[i][2])
+          id_bad=ml.find((np.array(temp1)>30) | (np.array(temp1)<-4)|(np.array(salinity1)>37)|(np.array(salinity1)<25))
           #print id_bad
           id_bad=list(id_bad)
           id_bad.reverse()
@@ -235,7 +265,7 @@ def get_neracoos_wind_data(url,id_s,id_e,id_max_url): #get wind data from neraco
             del period_str[m]
             del wind_all[m]
          return period_str,wind_all
-def get_neracoos_current_data(url,id_s,id_e,id_max_url): #get wind data from neracoos.
+def get_neracoos_current_data(url,id_s,id_e,id_max_url): #get current data from neracoos.
          url1=url+'current_speed[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_direction[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_u[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_v[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
          database_s=open_url(url1)['current_speed'][int(id_s):int(id_e)] 
          database_d=open_url(url1)['current_direction'][int(id_s):int(id_e)]
@@ -274,9 +304,37 @@ def get_neracoos_current_data(url,id_s,id_e,id_max_url): #get wind data from ner
             del period_str[m]
             del current_all[m]         
          return period_str,current_all
-         
-         
-         
+def get_neracoos_deep_current_data(url,id_s,id_e,id_max_url,depth_index): #get layer current data from neracoos.
+    url1=url+'time['+str(id_s)+':1:'+str(id_e)+'],depth['+str(depth_index)+'],current_u['+str(id_s)+':1:'+str(id_e)+']['+str(depth_index)+'][0:1:0][0:1:0],current_v['+str(id_s)+':1:'+str(id_e)+']['+str(depth_index)+'][0:1:0][0:1:0]'
+    database= netCDF4.Dataset(url1)
+    #database.variables
+    u = database.variables['current_u']
+    v = database.variables['current_v']
+    time=database.variables['time']  
+    depth=database.variables['depth']
+    period=num2date(time[:]+date2num(dt.datetime(1858, 11, 17, 0, 0)))
+    u=u[0:].tolist()
+    v=v[0:].tolist()
+    print type(depth[0])
+    period_str,current_all=[],[]
+    for i in range(len(period)): #convert format to list
+             period_str.append(dt.datetime.strftime(period[i],'%Y-%m-%d-%H-%M'))
+             current_all.append([round(u[i][0][0][0],2),round(v[i][0][0][0],2),depth[0]])
+          
+             #u_list.append(round(u[i][0][0][0],2))
+             #v_list.append(round(v[i][0][0][0],2))
+    u,v=[],[]# figure out bad data and delete
+    for i in range(len(current_all)):
+             u.append(current_all[i][0])
+             v.append(current_all[i][1])
+    id_bad=ml.find((np.array(u)<-200)| (np.array(u)>200)|(np.array(v)<-200)| (np.array(v)>200))
+         #print id_bad
+    id_bad=list(id_bad)
+    id_bad.reverse()
+    for m in id_bad:
+            del period_str[m]
+            del current_all[m]  
+    return    period_str, current_all
          
          
          

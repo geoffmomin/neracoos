@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jun  4 12:53:09 2013
+
+@author: hxu
+"""
+
+####################################################
+#get layer current data from neracoos OpenDap,generate a df which includ time,depth,current u and v.
+####################################################
+from matplotlib.dates import date2num, num2date
+import datetime as dt
+
+import sys
+import matplotlib.pyplot as plt
+import numpy as np
+from pandas import *
+pydir='../'
+sys.path.append(pydir)
+from neracoos_def import get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_deep_current_data,depth_select_ADCP
+ 
+inputfilename='./get_neracoos_ctl.txt'
+mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
+model='doppler'   
+sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of start time
+edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11,  17, 0, 0)) #get number type of end time
+depths,site_d,depth_index=depth_select_ADCP(sites,i_mindepth,i_maxdepth)
+for index_site in range(len(site_d)):
+    url='http://neracoos.org:8080/opendap/'+site_d[index_site]+'/'+site_d[index_site]+'.'+model+'.historical.nc?'     
+    id_s,id_e0,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
+    if mintime=='':   
+        histvsreal='1' #"histvsreal" can help us judge if this  site has historical data.
+        url='http://neracoos.org:8080/opendap/'+site_d[index_site]+'/'+site_d[index_site]+'.'+model+'.realtime.nc?'     
+        id_s,id_e0,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
+        print 'realtime from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
+    else:
+        histvsreal=''
+        print 'historical from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
+    if id_e0<>'':  
+      (period_str,current_all)=get_neracoos_deep_current_data(url,id_s,id_e0,id_max_url,depth_index[index_site]) #get data from web neracoos      
+      df = DataFrame(np.array(current_all),index=period_str,columns=['u','v','depth'])
+    else:
+        print "According to your input, there is no data here"    
+    if histvsreal<>'1':
+      if   maxtime<edtime_n: #make sure if we need a realtime data
+        url='http://neracoos.org:8080/opendap/'+site_d[index_site]+'/'+site_d[index_site]+'.'+model+'.realtime.nc?'     
+        id_s,id_e,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
+        if id_e<>'':     
+           (period_str,current_all)=get_neracoos_deep_current_data(url,id_s,id_e,id_max_url,depth_index[index_site])  #get data from web neracoos
+           print 'realtime from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
+           #df = DataFrame(np.array(depth_temp),index=period_str,columns=['                depth','      temp']).append(df)
+           if id_e0=='':
+              df = DataFrame(np.array(current_all),index=period_str,columns=['u','v' ,'depth'])
+           else:              
+              df = df.append(DataFrame(np.array(current_all),index=period_str,columns=['u','v','depth' ])) #combine them in DataFrame 
+    df.plot(title=site_d[index_site]+'_'+depths[index_site]+'m')
+    df.to_csv('current_'+site_d[index_site]+'.csv') #save it to a csv file
+    plt.show()
