@@ -18,9 +18,14 @@ from pandas import *
 pydir='../'
 sys.path.append(pydir)
 from neracoos_def import get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_deep_current_data,depth_select_ADCP
- 
+from get_neracoos_ctl import get_neracoos_ctl_py
+
 inputfilename='./get_neracoos_ctl.txt'
-mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
+if inputfilename[-2:]=='py':
+    mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl_py()
+else:
+    
+    mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
 model='doppler'   
 sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of start time
 edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11,  17, 0, 0)) #get number type of end time

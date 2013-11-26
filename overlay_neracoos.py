@@ -8,11 +8,11 @@ Created on Wed May 29 12:30:34 2013
 print "    please input data in 'get_neracoos_ctl.txt' "
 print "    1= get temperture data  "
 print "    2= get wind data"
-print "    3= get current surface data "
-print "    4= get current layers data"
+print "    3= get current data "
+
 
 #option=raw_input('\nMake a selection: ')
-option='4'
+option='1'
 print "you select "+option
 if option=='1':
     execfile("get_neracoos_temp.py")
@@ -20,8 +20,7 @@ if option=='2':
     execfile("get_neracoos_wind.py")
 if option=='3':
     execfile("get_neracoos_current.py")
-if option=='4':
-    execfile("get_neracoos_deep_current.py")
+
 
 
 

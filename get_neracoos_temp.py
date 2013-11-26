@@ -5,7 +5,7 @@ Created on Thu May 02 08:27:24 2013
 @author: Huanxin
 """
 ####################################################
-#get temp data from neracoos OpenDap,generate a df which includ time,lat,lon.depth and temperature.
+#get temp and salinity data from neracoos OpenDap,generate a df which includ time,lat,lon.depth and temperature.
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
@@ -22,13 +22,20 @@ sys.path.append(pydir)
 from neracoos_def import get_neracoos_ctl,depth_select,get_id_s_id_e_id_max_url,get_neracoos_temp_data
 
  
-inputfilename='./get_neracoos_ctl.txt'
-mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
+from get_neracoos_ctl import get_neracoos_ctl_py
+
+inputfilename='./get_neracoos_ctl.py'
+if inputfilename[-2:]=='py':
+    mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl_py()
+else:
+    
+    mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
 model='sbe37' 
 sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of start time
 edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of end time
 
 depths,site_d=depth_select(sites,i_mindepth,i_maxdepth) #one site match one depth, 
+
 for index_site in range(len(site_d)):
     if model=='sbe16':
         
@@ -48,9 +55,10 @@ for index_site in range(len(site_d)):
       (depth_temp,period_str)=get_neracoos_temp_data(url,id_s,id_e0,id_max_url) #get data from web neracoos
       print 'the end time of this database is '+num2date(maxtime+date2num(dt.datetime(1858, 11, 17, 0, 0))).strftime("%d-%b-%y")
       
-      df = DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp'])
+      df = DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','salinity'])
     else:
         print "According to your input, there is no data here"
+        
     if histvsreal<>'1':
       if   maxtime<edtime_n: #make sure if we need a realtime data
         url='http://neracoos.org:8080/opendap/'+site_d[index_site]+'/'+site_d[index_site]+'.'+model+'.realtime.'+depths[index_site]+'m.nc?'     
@@ -59,9 +67,9 @@ for index_site in range(len(site_d)):
            (depth_temp,period_str)=get_neracoos_temp_data(url,id_s,id_e,id_max_url)  #get data from web neracoos
            #df = DataFrame(np.array(depth_temp),index=period_str,columns=['                depth','      temp']).append(df)
            if id_e0=='':
-              df = DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp'])#combine them in DataFrame   
+              df = DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','salinity'])#combine them in DataFrame   
            else:              
-              df.append(DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp']))    
+              df.append(DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','salinity']))    
     df.plot()    
     df.to_csv('temp_'+site_d[index_site]+'_'+depths[index_site]+'m.csv') #save it to a csv file
 plt.show()

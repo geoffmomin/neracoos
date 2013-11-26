@@ -11,7 +11,7 @@ from matplotlib.dates import date2num, num2date
 import datetime as dt
 
 import matplotlib.mlab as ml
-import numpy as np
+#import numpy as np
 from pydap.client import open_url
 from pandas import *
 import netCDF4
@@ -127,7 +127,7 @@ def depth_add(depth_box):
        depths.append(depth_box[depth_index])
    return depths
 '''
-def depth_select(sites,i_mindepth,i_maxdepth): #select depth which we have in web . 
+def depth_select(sites,i_mindepth,i_maxdepth): #select depth which we have in web . spe module
     depths=[]
     site_d=[]
     for k in range(len(sites)):
@@ -167,7 +167,7 @@ def depth_select(sites,i_mindepth,i_maxdepth): #select depth which we have in we
             print sites[k]+' is not here,please check  your input '
         '''
     return depths,site_d
-def depth_select_ADCP(sites,i_mindepth,i_maxdepth):
+def depth_select_ADCP(sites,i_mindepth,i_maxdepth): #get depth of ADCP module
     depths=[]
     site_d=[]   
     for k in range(len(sites)):
@@ -191,7 +191,7 @@ def depth_select_ADCP(sites,i_mindepth,i_maxdepth):
                 depths.append(str(depth_box[i]))
                 site_d.append(sites[k])
     return depths,site_d,depth_index    
-def get_neracoos_temp_data(url,id_s,id_e,id_max_url): #get temperature data from neracoos.
+def get_neracoos_temp_data(url,id_s,id_e,id_max_url): #get temperature and salinity data from neracoos.
           url1=url+'temperature[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],salinity[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
           database=open_url(url1)['temperature'][int(id_s):int(id_e)]
           database_s=open_url(url1)['salinity'][int(id_s):int(id_e)]
@@ -265,7 +265,7 @@ def get_neracoos_wind_data(url,id_s,id_e,id_max_url): #get wind data from neraco
             del period_str[m]
             del wind_all[m]
          return period_str,wind_all
-def get_neracoos_current_data(url,id_s,id_e,id_max_url): #get current data from neracoos.
+def get_neracoos_current_data(url,id_s,id_e,id_max_url): #get surface current data from neracoos.
          url1=url+'current_speed[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_direction[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_u[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_v[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
          database_s=open_url(url1)['current_speed'][int(id_s):int(id_e)] 
          database_d=open_url(url1)['current_direction'][int(id_s):int(id_e)]
@@ -304,8 +304,8 @@ def get_neracoos_current_data(url,id_s,id_e,id_max_url): #get current data from 
             del period_str[m]
             del current_all[m]         
          return period_str,current_all
-def get_neracoos_deep_current_data(url,id_s,id_e,id_max_url,depth_index): #get layer current data from neracoos.
-    url1=url+'time['+str(id_s)+':1:'+str(id_e)+'],depth['+str(depth_index)+'],current_u['+str(id_s)+':1:'+str(id_e)+']['+str(depth_index)+'][0:1:0][0:1:0],current_v['+str(id_s)+':1:'+str(id_e)+']['+str(depth_index)+'][0:1:0][0:1:0]'
+def get_neracoos_deep_current_data(url,id_s,id_e0,id_max_url,depth_index): #get layer current data from neracoos.
+    url1=url+'time['+str(id_s)+':1:'+str(id_e0)+'],depth['+str(depth_index)+'],current_u['+str(id_s)+':1:'+str(id_e0)+']['+str(depth_index)+'][0:1:0][0:1:0],current_v['+str(id_s)+':1:'+str(id_e0)+']['+str(depth_index)+'][0:1:0][0:1:0]'
     database= netCDF4.Dataset(url1)
     #database.variables
     u = database.variables['current_u']

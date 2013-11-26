@@ -17,9 +17,14 @@ from pandas import *
 pydir='../'
 sys.path.append(pydir)
 from neracoos_def import get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_current_data
- 
+from get_neracoos_ctl import get_neracoos_ctl_py
+
 inputfilename='./get_neracoos_ctl.txt'
-mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
+if inputfilename[-2:]=='py':
+    mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl_py()
+else:
+    
+    mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
 model='aanderaa'   
 sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of start time
 edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of end time
@@ -32,6 +37,7 @@ for index_site in range(len(sites)):
         histvsreal='1' #"histvsreal" can help us judge if this  site has historical data.
         url='http://neracoos.org:8080/opendap/'+sites[index_site]+'/'+sites[index_site]+'.'+model+'.realtime.nc?'     
         id_s,id_e0,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
+        
         print 'realtime from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
     else:
         histvsreal=''
