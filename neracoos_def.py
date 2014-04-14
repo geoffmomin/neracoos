@@ -318,9 +318,12 @@ def get_neracoos_deep_current_data(url,id_s,id_e0,id_max_url,depth_index): #get 
     print type(depth[0])
     period_str,current_all=[],[]
     for i in range(len(period)): #convert format to list
-             period_str.append(dt.datetime.strftime(period[i],'%Y-%m-%d-%H-%M'))
-             current_all.append([round(u[i][0][0][0],2),round(v[i][0][0][0],2),depth[0]])
-          
+             if u[i][0][0][0]<>None:
+                 
+               period_str.append(dt.datetime.strftime(period[i],'%Y-%m-%d-%H-%M'))
+               current_all.append([round(u[i][0][0][0],2),round(v[i][0][0][0],2),depth[0]])
+             else:
+               print dt.datetime.strftime(period[i],'%Y-%m-%d-%H-%M')
              #u_list.append(round(u[i][0][0][0],2))
              #v_list.append(round(v[i][0][0][0],2))
     u,v=[],[]# figure out bad data and delete

@@ -7,6 +7,9 @@ Created on Thu May 02 08:27:24 2013
 """
 ####################################################
 #get wind data from neracoos OpenDap,generate a df which includ time,lat,lon.current speed,current direction,depth.
+#according to datetime, it select current or his database
+#from that database gets depth','wind','direction
+#plot a graph
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
