@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed May 29 12:30:34 2013
+This is the main program of neracoos, before you running it, please check the control file
 
 @author: hxu
 """
@@ -25,8 +26,8 @@ if option=='4':
 
 
 
-
-''' lat and lon of sites
+##################################################
+''' lat and lon of sites, you may use it in control file
 Dataset: A01.sbe37.historical.50m.nc
 lat, 42.5180647466176
 lon, -70.5652227043109
@@ -58,3 +59,4 @@ Dataset: N01.sbe37.historical.180m.nc
 lat, 42.3314893622147
 lon, -65.9064274838096
 '''
+###############################################################
