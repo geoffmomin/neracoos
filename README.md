@@ -7,7 +7,7 @@ get ocean data(wind, temp, current,  )  from http://www.neracoos.org/datatools/d
 how to use it:
 
 
-1, open file overlays.py 
+1, open file 'get_neracoos_main.py' 
 
 2, before running it, modify corresponding control file. 
 
