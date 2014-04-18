@@ -3,6 +3,7 @@
 Created on Tue May 14 10:32:46 2013
 
 @author: hxu
+This is a functional package which work for Neracoos
 """
 import sys
 pydir1='/home/hxu/epd73/epd-7.3-2-rh5-x86_64/lib/python2.7/site-packages'

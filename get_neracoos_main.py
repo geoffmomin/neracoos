@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed May 29 12:30:34 2013
-This is the main program of neracoos, before you running it, please check the control file
+This is the main program of neracoos,you could get temp,wind,current data from here
+*Before you running it, please check the control file
 
 @author: hxu
 """
