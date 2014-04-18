@@ -9,8 +9,10 @@ how to use it:
 
 1, open file 'get_neracoos_main.py' 
 
-2, before running it, modify corresponding control file. 
+2, before running it, modify corresponding control file (get_neracoos_ctl.txt). 
 
-3, run it
+3, select a option (change hard code 'option' value in 'get_neracoos_main.py'  )
 
-4, select a opinion 
+4, run it
+
+
