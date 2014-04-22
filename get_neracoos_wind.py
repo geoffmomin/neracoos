@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pandas import *
 pydir='../'
-
+#from matplotlib import dates
 sys.path.append(pydir)
 
 from neracoos_def import get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_wind_data
@@ -96,7 +96,24 @@ for index_site in range(len(sites)):
               df = DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind','direction'])
            else:              
               df = df.append(DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind','direction']))#combine them in DataFrame  
-    df.plot()
+    #plt.subplot(2, 1, 1)   
+    #df.plot()
+    
+    #plt.subplot(2, 1, 2)
+    wind_power = [wind_all[x][1] for x in range(len(wind_all))] 
+    #date_time=[dt.datetime.strptime(period_str[x],'%Y-%m-%d-%H-%M') for x in range(len(period_str))] 
+    #fig = plt.figure()
+    #ax = fig.add_subplot(111)    
+    #hfmt = dates.DateFormatter('%Y-%m-%d-%H-%M')
+    #ax.xaxis.set_major_locator(dates.MinuteLocator())
+    #ax.xaxis.set_major_formatter(hfmt)    
+    #plt.plot_date(date_time, wind_power, 'k')
+   
+    df_w=DataFrame(np.array(wind_power),index=period_str,columns=['wind'])  #get wind power
+    df_w.plot(title=sites[index_site])
+    plt.gcf().autofmt_xdate()
+    plt.xlabel('time')
+    plt.ylabel('wind (m/s)')
     plt.show()
     df.to_csv('wind_'+sites[index_site]+'.csv') #save it to a csv file
 

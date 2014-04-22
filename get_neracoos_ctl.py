@@ -7,7 +7,7 @@ Created on Mon Nov 25 13:27:11 2013
 import datetime as dt
 def get_neracoos_ctl_py():
   select=[0,1,1,1]
-  dtime='[2002,9,1,0,0;2013,9,10,23,59]'
+  dtime='[2002,9,1,0,0;2002,9,10,23,59]'
   model=['sbe37']   #like met,sbe37,sbe16,aanderaa
   idepth=[30,90]   #depth range
   sites=['B01']   # like  A01,F01

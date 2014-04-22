@@ -9,7 +9,7 @@ Created on Mon May 20 13:19:21 2013
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
-
+from pylab import *
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
@@ -59,7 +59,17 @@ for index_site in range(len(sites)):
               df = DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])
            else:              
               df = df.append(DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])) #combine them in DataFrame 
-    df.plot()
+    
+     
+    df_c=df.ix[:,[0]] # get current from df
+    df_c.plot()
+    plt.gcf().autofmt_xdate() #plot time to show clearly
+    df_uv=df.ix[:,[2,3]]  #get u,v from df
+    df_uv.plot()
+    plt.gcf().autofmt_xdate()
+    df_d=df.ix[:,[1]]    #get direction from df
+    df_d.plot()
+    plt.gcf().autofmt_xdate()
     df.to_csv('current_'+sites[index_site]+'.csv') #save it to a csv file
     plt.show()
 

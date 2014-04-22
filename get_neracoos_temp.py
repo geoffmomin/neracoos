@@ -24,7 +24,7 @@ from neracoos_def import get_neracoos_ctl,depth_select,get_id_s_id_e_id_max_url,
  
 from get_neracoos_ctl import get_neracoos_ctl_py
 
-inputfilename='./get_neracoos_ctl.py'
+inputfilename='./get_neracoos_ctl.txt'
 if inputfilename[-2:]=='py':
     mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl_py()
 else:
@@ -35,7 +35,9 @@ sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get numbe
 edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of end time
 
 depths,site_d=depth_select(sites,i_mindepth,i_maxdepth) #one site match one depth, 
-
+if site_d==[]:
+    print 'No right site , Please check website and your input data, '
+    
 for index_site in range(len(site_d)):
     if model=='sbe16':
         
@@ -70,7 +72,14 @@ for index_site in range(len(site_d)):
               df = DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','salinity'])#combine them in DataFrame   
            else:              
               df.append(DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','salinity']))    
-    df.plot()    
+    
+    df_t=df.ix[:,[1]]
+        
+    df_t.plot(title=site_d[index_site]+'   Depth='+depths[index_site]+'m')
+    plt.gcf().autofmt_xdate()
+    df_s=df.ix[:,[2]]  
+    df_s.plot(title=site_d[index_site]+'   Depth='+depths[index_site]+'m')
+    plt.gcf().autofmt_xdate()
     df.to_csv('temp_'+site_d[index_site]+'_'+depths[index_site]+'m.csv') #save it to a csv file
 plt.show()
 
