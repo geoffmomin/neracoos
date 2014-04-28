@@ -114,9 +114,9 @@ for index_site in range(len(sites)):
     plt.gcf().autofmt_xdate()
     plt.xlabel('time')
     plt.ylabel('wind (m/s)')
-    plt.show()
+    
     df.to_csv('wind_'+sites[index_site]+'.csv') #save it to a csv file
-
+plt.show()
 
 
 

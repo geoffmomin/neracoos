@@ -60,18 +60,18 @@ for index_site in range(len(sites)):
            else:              
               df = df.append(DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])) #combine them in DataFrame 
     
-     
+    fig, axes = plt.subplots(nrows=3, ncols=1)
     df_c=df.ix[:,[0]] # get current from df
-    df_c.plot()
+    df_c.plot(ax=axes[0],title=sites[index_site],color='r')
     plt.gcf().autofmt_xdate() #plot time to show clearly
     df_uv=df.ix[:,[2,3]]  #get u,v from df
-    df_uv.plot()
+    df_uv.plot(ax=axes[1])
     plt.gcf().autofmt_xdate()
     df_d=df.ix[:,[1]]    #get direction from df
-    df_d.plot()
+    df_d.plot(ax=axes[2],color='gray')
     plt.gcf().autofmt_xdate()
     df.to_csv('current_'+sites[index_site]+'.csv') #save it to a csv file
-    plt.show()
+plt.show()
 
 
 

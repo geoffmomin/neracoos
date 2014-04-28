@@ -335,6 +335,7 @@ def get_neracoos_deep_current_data(url,id_s,id_e0,id_max_url,depth_index): #get 
          #print id_bad
     id_bad=list(id_bad)
     id_bad.reverse()
+    #print id_bad
     for m in id_bad:
             del period_str[m]
             del current_all[m]  

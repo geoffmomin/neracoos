@@ -58,6 +58,9 @@ for index_site in range(len(site_d)):
               df = DataFrame(np.array(current_all),index=period_str,columns=['u','v' ,'depth'])
            else:              
               df = df.append(DataFrame(np.array(current_all),index=period_str,columns=['u','v','depth' ])) #combine them in DataFrame 
-    df.plot(title=site_d[index_site]+'_'+depths[index_site]+'m')
+    
+    df_uv=df.ix[:,[0,1]]  #get u,v from df    
+    df_uv.plot(title=site_d[index_site]+'_'+depths[index_site]+'m')
+    plt.gcf().autofmt_xdate()
     df.to_csv('current_'+site_d[index_site]+'.csv') #save it to a csv file
-    plt.show()
+plt.show()

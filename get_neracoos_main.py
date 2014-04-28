@@ -14,7 +14,7 @@ print "    3= get current surface data "
 print "    4= get current layers data"
 
 #option=raw_input('\nMake a selection: ')
-option='1'
+option='4'
 print "you select "+option
 if option=='1':
     execfile("get_neracoos_temp.py")

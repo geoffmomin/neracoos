@@ -39,6 +39,7 @@ if site_d==[]:
     print 'No right site , Please check website and your input data, '
     
 for index_site in range(len(site_d)):
+    
     if model=='sbe16':
         
        url='http://neracoos.org:8080/opendap/'+site_d[index_site]+'/'+site_d[index_site]+'.'+model+'.historical.nc?' 
@@ -58,14 +59,16 @@ for index_site in range(len(site_d)):
       print 'the end time of this database is '+num2date(maxtime+date2num(dt.datetime(1858, 11, 17, 0, 0))).strftime("%d-%b-%y")
       
       df = DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','salinity'])
+      have_not=1   # dataframe not equal none ,so we can plot it
     else:
-        print "According to your input, there is no data here"
-        
-    if histvsreal<>'1':
+      print "According to your input, there is no data here"
+      have_not=0   # dataframe equal none ,so we can not plot it
+    if histvsreal<>'1': 
       if   maxtime<edtime_n: #make sure if we need a realtime data
         url='http://neracoos.org:8080/opendap/'+site_d[index_site]+'/'+site_d[index_site]+'.'+model+'.realtime.'+depths[index_site]+'m.nc?'     
         id_s,id_e,id_max_url,maxtime,mintime=get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n)
-        if id_e<>'':     
+        if id_e<>'':    
+           have_not=1 # dataframe not equal none ,so we can plot it
            (depth_temp,period_str)=get_neracoos_temp_data(url,id_s,id_e,id_max_url)  #get data from web neracoos
            #df = DataFrame(np.array(depth_temp),index=period_str,columns=['                depth','      temp']).append(df)
            if id_e0=='':
@@ -73,14 +76,20 @@ for index_site in range(len(site_d)):
            else:              
               df.append(DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','salinity']))    
     
-    df_t=df.ix[:,[1]]
-        
-    df_t.plot(title=site_d[index_site]+'   Depth='+depths[index_site]+'m')
-    plt.gcf().autofmt_xdate()
-    df_s=df.ix[:,[2]]  
-    df_s.plot(title=site_d[index_site]+'   Depth='+depths[index_site]+'m')
-    plt.gcf().autofmt_xdate()
-    df.to_csv('temp_'+site_d[index_site]+'_'+depths[index_site]+'m.csv') #save it to a csv file
+    
+    if have_not==0:
+        continue    # If dataframe== None, pass it
+    else:
+      fig, axes = plt.subplots(nrows=2, ncols=1)
+    
+      df_t=df.ix[:,[1]]  #creat a new df only for temp  
+      df_t.plot(ax=axes[0],title=site_d[index_site]+'   Depth='+depths[index_site]+'m')
+      plt.gcf().autofmt_xdate()
+  
+      df_s=df.ix[:,[2]]   #creat a new df only for salinity  
+      df_s.plot(ax=axes[1],color='r')
+      plt.gcf().autofmt_xdate()
+      df.to_csv('temp_'+site_d[index_site]+'_'+depths[index_site]+'m.csv') #save it to a csv file
 plt.show()
 
 
