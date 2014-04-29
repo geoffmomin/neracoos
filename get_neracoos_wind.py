@@ -82,7 +82,7 @@ for index_site in range(len(sites)):
         histvsreal=''
     if id_e0<>'':  
       (period_str,wind_all)=get_neracoos_wind_data(url,id_s,id_e0,id_max_url) #get data from web neracoos
-      df = DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind','direction'])
+      df = DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind speed','direction'])
     else:
         print "According to your input, there is no data here"    
     if histvsreal<>'1':
@@ -93,9 +93,9 @@ for index_site in range(len(sites)):
         if id_e<>'':     
            (period_str,wind_all)=get_neracoos_wind_data(url,id_s,id_e,id_max_url)  #get data from web neracoos
            if id_e0=='':
-              df = DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind','direction'])
+              df = DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind speed ','direction'])
            else:              
-              df = df.append(DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind','direction']))#combine them in DataFrame  
+              df = df.append(DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind speed','direction']))#combine them in DataFrame  
     #plt.subplot(2, 1, 1)   
     #df.plot()
     
@@ -113,7 +113,7 @@ for index_site in range(len(sites)):
     df_w.plot(title=sites[index_site])
     plt.gcf().autofmt_xdate()
     plt.xlabel('time')
-    plt.ylabel('wind (m/s)')
+    plt.ylabel('wind speed (m/s)')
     
     df.to_csv('wind_'+sites[index_site]+'.csv') #save it to a csv file
 plt.show()

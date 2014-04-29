@@ -44,7 +44,7 @@ for index_site in range(len(sites)):
         print 'historical from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
     if id_e0<>'':  
       (period_str,current_all)=get_neracoos_current_data(url,id_s,id_e0,id_max_url) #get data from web neracoos      
-      df = DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])
+      df = DataFrame(np.array(current_all),index=period_str,columns=['current speed','direction','u','v' ])
     else:
         print "According to your input, there is no data here"    
     if histvsreal<>'1':
@@ -56,9 +56,9 @@ for index_site in range(len(sites)):
            print 'realtime from '+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+mintime))+'to'+str(num2date(date2num(dt.datetime(1858, 11, 17, 0, 0))+maxtime))
            #df = DataFrame(np.array(depth_temp),index=period_str,columns=['                depth','      temp']).append(df)
            if id_e0=='':
-              df = DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])
+              df = DataFrame(np.array(current_all),index=period_str,columns=['current speed','direction','u','v' ])
            else:              
-              df = df.append(DataFrame(np.array(current_all),index=period_str,columns=['current','direction','u','v' ])) #combine them in DataFrame 
+              df = df.append(DataFrame(np.array(current_all),index=period_str,columns=['current speed','direction','u','v' ])) #combine them in DataFrame 
     
     fig, axes = plt.subplots(nrows=3, ncols=1)
     df_c=df.ix[:,[0]] # get current from df
