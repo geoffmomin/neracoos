@@ -55,10 +55,13 @@ def get_neracoos_ctl(inputfilename):# get data input from a txt file
    return  mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites
 def get_neracoos_ctl_id(url,datetime_wanted): #accroding time you input,get a index of that
     
-        dtime=open_url(url+'?time')
+        database= netCDF4.Dataset(url+'time')
+        time=database.variables['time'] 
+        #dtime=open_url(url+'?time')
         #dd=dtime['time']
         ddd=[]
-        for i in list(dtime['time']):
+        for i in time[0:].tolist():
+        #for i in list(dtime['time']):
             i=round(i,7)
             ddd.append(i)
         #print "This option has data from "+str(num2date(dd[0]+date2num(datetime.datetime(2001, 1, 1, 0, 0))))+" to "+str(num2date(dd[-1]+date2num(datetime.datetime(2001, 1, 1, 0, 0)))) 
@@ -74,14 +77,18 @@ def get_neracoos_ctl_id(url,datetime_wanted): #accroding time you input,get a in
 
         return id
 def get_neracoos_ctl_id_max(url):  #get the max datetime , min datetime and index of max datetime
-        try:
-            dtime=open_url(url+'?time')
-        except:
-            print 'no data that you want in this '+url
-            
-            return '','',''
+        #try:
+        database= netCDF4.Dataset(url+'time')
+        #print '1'
+            #dtime=open_url(url+'?time')
+        #except:
+         #   print 'no data that you want in this '+url
+        time=database.variables['time'] 
+        
+        #print type(time)
+          #  return '','',''
         ddd=[]
-        for i in list(dtime['time']):
+        for i in time[0:].tolist():
             i=round(i,7)
             ddd.append(i)
             
@@ -93,7 +100,7 @@ def get_neracoos_ctl_id_max(url):  #get the max datetime , min datetime and inde
         for i in id_max:
           id_max=str(i) 
         #print 'codar id is  '+id
-
+        print id_max
         return id_max,max(ddd),min(ddd)
 def get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n): # get id of start time and end time, and get max datetime , min datetime and index of max datetime from get_neracoos_ctl_id
         id_max_url,maxtime,mintime=get_neracoos_ctl_id_max(url)
@@ -193,19 +200,24 @@ def depth_select_ADCP(sites,i_mindepth,i_maxdepth): #get depth of ADCP module
                 site_d.append(sites[k])
     return depths,site_d,depth_index    
 def get_neracoos_temp_data(url,id_s,id_e,id_max_url): #get temperature and salinity data from neracoos.
-          url1=url+'temperature[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],salinity[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
-          database=open_url(url1)['temperature'][int(id_s):int(id_e)]
-          database_s=open_url(url1)['salinity'][int(id_s):int(id_e)]
-          salinity=database_s['salinity']
-          salinity=salinity[0:].tolist()
+          url1=url+'depth[0:1:0],time['+id_s+':1:'+id_e+'],temperature['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0],salinity['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0]'
+          #database=open_url(url1)['temperature'][int(id_s):int(id_e)]
+          #database_s=open_url(url1)['salinity'][int(id_s):int(id_e)]
+          database= netCDF4.Dataset(url1)  
+          database_time=database.variables['time']
+          database_s=database.variables['salinity']
+          database_t=database.variables['temperature']
+          database_depth=database.variables['depth']          
+          #salinity=database_s['salinity']
+          salinity=database_s[0:].tolist()
           #lat=database['lat']
           #lat=round(lat[0],2)
           #lon=database['lon']
           #lon=round(lon[0],2)
-          depth=database['depth']
-          period=database['time']
-          temp=database['temperature']
-          temp=temp[0:].tolist()
+          depth=database_depth
+          period=database_time
+          #temp=database['temperature']
+          temp=database_t[0:].tolist()
           period=num2date(period[0:]+date2num(dt.datetime(1858, 11, 17, 0, 0)))
           period_str,depth_temp=[],[]
     
@@ -236,29 +248,29 @@ def get_neracoos_temp_data(url,id_s,id_e,id_max_url): #get temperature and salin
           #df=DataFrame(np.array(depth_temp),index=period_str,columns=['depth','temp','lat','lon'])
           return depth_temp,period_str
 def get_neracoos_wind_data(url,id_s,id_e,id_max_url): #get wind data from neracoos.
-         url1=url+'wind_speed[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],wind_direction[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
-         database_s=open_url(url1)['wind_speed'][int(id_s):int(id_e)]
-         database_d=open_url(url1)['wind_direction'][int(id_s):int(id_e)]
-         #lat=database_s['lat']
-         #lat=round(lat[0],2)
-         #lon=database_s['lon']
-         #lon=round(lon[0],2)
-         depth=database_s['wind_depth']
-         period=database_s['time']
-         speed=database_s['wind_speed']
-         speed=speed[0:].tolist()
+         url1=url+'time['+id_s+':1:'+id_e+'],wind_speed['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0],wind_direction['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0]'
+         database= netCDF4.Dataset(url1)         
+         database_s=database.variables['wind_speed']
+         database_d=database.variables['wind_direction']
+
+         period=database.variables['time']
+         #print period
+         #speed=database_s['wind_speed']
+         speed=database_s[0:].tolist()
+         #period=period[0:].tolist()
          period=num2date(period[0:]+date2num(dt.datetime(1858, 11, 17, 0, 0)))
-         direction=database_d['wind_direction']
-         direction=direction[0:].tolist()
+         #direction=database_d['wind_direction']
+         direction=database_d[0:].tolist()
          period_str,wind_all=[],[]
          for i in range(len(period)): #convert format to list
              period_str.append(dt.datetime.strftime(period[i],'%Y-%m-%d-%H-%M'))
-             wind_all.append([round(depth[0],1),round(speed[i][0][0][0],2),round(direction[i][0][0][0],2)])
+             wind_all.append([round(speed[i][0][0][0],2),round(direction[i][0][0][0],2)])
          wind,direction=[],[] # figure out bad data and delete
          for i in range(len(wind_all)):
-           wind.append(wind_all[i][1])
-           direction.append(wind_all[i][2])
-         id_bad=ml.find((np.array(wind)>300) | (np.array(wind)<-1) | (np.array(direction)<0)| (np.array(direction)>360))
+           wind.append(wind_all[i][0])
+           direction.append(wind_all[i][1])
+         #print wind
+         id_bad=ml.find((np.array(wind)>300) | (np.array(wind)<0.1) | (np.array(direction)<0)| (np.array(direction)>360))
          #print id_bad
          id_bad=list(id_bad)
          id_bad.reverse()
@@ -267,26 +279,33 @@ def get_neracoos_wind_data(url,id_s,id_e,id_max_url): #get wind data from neraco
             del wind_all[m]
          return period_str,wind_all
 def get_neracoos_current_data(url,id_s,id_e,id_max_url): #get surface current data from neracoos.
-         url1=url+'current_speed[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_direction[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_u[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_v[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
-         database_s=open_url(url1)['current_speed'][int(id_s):int(id_e)] 
-         database_d=open_url(url1)['current_direction'][int(id_s):int(id_e)]
-         database_u=open_url(url1)['current_u'][int(id_s):int(id_e)]
-         database_v=open_url(url1)['current_v'][int(id_s):int(id_e)]
+         #url1=url+'current_speed[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_direction[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_u[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0],current_v[0:1:'+id_max_url+'][0:1:0][0:1:0][0:1:0]'
+         url1=url+'time['+id_s+':1:'+id_e+'],current_speed['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0],current_direction['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0],current_u['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0],current_v['+id_s+':1:'+id_e+'][0:1:0][0:1:0][0:1:0]'
+         database= netCDF4.Dataset(url1)   
+         database_s=database.variables['current_speed']
+         database_d=database.variables['current_direction']
+         database_u=database.variables['current_u']
+         database_v=database.variables['current_v']
+         period=database.variables['time']
+         #database_s=open_url(url1)['current_speed'][int(id_s):int(id_e)] 
+         #database_d=open_url(url1)['current_direction'][int(id_s):int(id_e)]
+         #database_u=open_url(url1)['current_u'][int(id_s):int(id_e)]
+         #database_v=open_url(url1)['current_v'][int(id_s):int(id_e)]
          #lat=database_s['lat']
          #lat=round(lat[0],2)
          #lon=database_s['lon']
          #lon=round(lon[0],2)
          
-         period=database_s['time']
-         speed=database_s['current_speed']
-         speed=speed[0:].tolist()
+         #period=database_s['time']
+         #speed=database_s['current_speed']
+         speed=database_s[0:].tolist()
          period=num2date(period[0:]+date2num(dt.datetime(1858, 11, 17, 0, 0)))
-         direction=database_d['current_direction']
-         direction=direction[0:].tolist()
-         u=database_u['current_u']
-         u=u[0:].tolist()    
-         v=database_v['current_v']
-         v=v[0:].tolist() 
+         #direction=database_d['current_direction']
+         direction=database_d[0:].tolist()
+         #u=database_u['current_u']
+         u=database_u[0:].tolist()    
+         #v=database_v['current_v']
+         v=database_v[0:].tolist() 
          period_str,current_all=[],[]
          for i in range(len(period)): #convert format to list
              period_str.append(dt.datetime.strftime(period[i],'%Y-%m-%d-%H-%M'))

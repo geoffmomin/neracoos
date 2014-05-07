@@ -82,7 +82,7 @@ for index_site in range(len(sites)):
         histvsreal=''
     if id_e0<>'':  
       (period_str,wind_all)=get_neracoos_wind_data(url,id_s,id_e0,id_max_url) #get data from web neracoos
-      df = DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind speed','direction'])
+      df = DataFrame(np.array(wind_all),index=period_str,columns=['wind speed','direction'])
     else:
         print "According to your input, there is no data here"    
     if histvsreal<>'1':
@@ -93,14 +93,14 @@ for index_site in range(len(sites)):
         if id_e<>'':     
            (period_str,wind_all)=get_neracoos_wind_data(url,id_s,id_e,id_max_url)  #get data from web neracoos
            if id_e0=='':
-              df = DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind speed ','direction'])
+              df = DataFrame(np.array(wind_all),index=period_str,columns=['wind speed ','direction'])
            else:              
-              df = df.append(DataFrame(np.array(wind_all),index=period_str,columns=['depth','wind speed','direction']))#combine them in DataFrame  
+              df = df.append(DataFrame(np.array(wind_all),index=period_str,columns=['wind speed','direction']))#combine them in DataFrame  
     #plt.subplot(2, 1, 1)   
     #df.plot()
     
     #plt.subplot(2, 1, 2)
-    wind_power = [wind_all[x][1] for x in range(len(wind_all))] 
+    wind_power = [wind_all[x][0] for x in range(len(wind_all))] 
     #date_time=[dt.datetime.strptime(period_str[x],'%Y-%m-%d-%H-%M') for x in range(len(period_str))] 
     #fig = plt.figure()
     #ax = fig.add_subplot(111)    
