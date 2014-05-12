@@ -2,6 +2,7 @@ neracoos
 ========
 
 get ocean data(wind, temp, current,  )  from http://www.neracoos.org/datatools/data_access/OPeNDAP
+Then, you can save it or plot a graph
 
 
 how to use it:
