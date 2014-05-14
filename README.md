@@ -1,8 +1,8 @@
 neracoos
 ========
 
-it gets ocean data(wind, temp, current,  )  from neracoos website
-Then, saves it or plots a graph
+it gets ocean data (wind, temp, current), from neracoos website<br>
+Then, saves it or plots a graph<br>
 
 
 how to use it:
