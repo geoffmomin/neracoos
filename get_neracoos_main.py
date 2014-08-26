@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+3# -*- coding: utf-8 -*-
 """
 Created on Wed May 29 12:30:34 2013
 This is the main program of neracoos,you could get temp,wind,current data from here
@@ -17,13 +17,21 @@ option=raw_input('\nMake a selection: ')
 #option='4'
 print "you just selected option "+ option
 if option=='1':
+    print 'to get temp data' 
     execfile("get_neracoos_temp.py")
+    
 if option=='2':
+    print 'to get wind data'
     execfile("get_neracoos_wind.py")
+    
 if option=='3':
+    print'to get surface current data'
     execfile("get_neracoos_current.py")
+    
 if option=='4':
+    print 'to get layer current data'
     execfile("get_neracoos_deep_current.py")
+    
 
 
 

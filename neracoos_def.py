@@ -13,7 +13,7 @@ import datetime as dt
 
 import matplotlib.mlab as ml
 #import numpy as np
-from pydap.client import open_url
+
 from pandas import *
 import netCDF4
 def get_neracoos_ctl(inputfilename):# get data input from a txt file
@@ -100,7 +100,7 @@ def get_neracoos_ctl_id_max(url):  #get the max datetime , min datetime and inde
         for i in id_max:
           id_max=str(i) 
         #print 'codar id is  '+id
-        print id_max
+        #print id_max
         return id_max,max(ddd),min(ddd)
 def get_id_s_id_e_id_max_url(url,sdtime_n,edtime_n): # get id of start time and end time, and get max datetime , min datetime and index of max datetime from get_neracoos_ctl_id
         id_max_url,maxtime,mintime=get_neracoos_ctl_id_max(url)
@@ -335,7 +335,7 @@ def get_neracoos_deep_current_data(url,id_s,id_e0,id_max_url,depth_index): #get 
     period=num2date(time[:]+date2num(dt.datetime(1858, 11, 17, 0, 0)))
     u=u[0:].tolist()
     v=v[0:].tolist()
-    print type(depth[0])
+    #print type(depth[0])
     period_str,current_all=[],[]
     for i in range(len(period)): #convert format to list
              if u[i][0][0][0]<>None:

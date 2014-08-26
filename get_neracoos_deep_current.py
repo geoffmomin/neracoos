@@ -6,7 +6,11 @@ Created on Tue Jun  4 12:53:09 2013
 """
 
 ####################################################
-#get layer current data from neracoos OpenDap,generate a df which includ time,depth,current u and v.
+#get layer current data from neracoos OpenDap,generate a dataframe which includes time,lat,lon,u,v and depth.
+#then ,plots a graph
+#Functions uses: get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_deep_current_data,depth_select_ADCP
+#input values: datetime period,the mooring type, the name of mooring site,layer depth
+#output values: a data frame 
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
@@ -62,5 +66,5 @@ for index_site in range(len(site_d)):
     df_uv=df.ix[:,[0,1]]  #get u,v from df    
     df_uv.plot(title=site_d[index_site]+'_'+depths[index_site]+'m')
     plt.gcf().autofmt_xdate()
-    df.to_csv('current_'+site_d[index_site]+'.csv') #save it to a csv file
+    df.to_csv('current_d_'+site_d[index_site]+'.csv') #save it to a csv file
 plt.show()
