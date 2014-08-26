@@ -11,7 +11,7 @@ how to use it:
 
 2, run 'get_neracoos_main.py' 
 
-3, select a option 
+3, select an option 
 
 
 
