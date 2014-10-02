@@ -62,7 +62,7 @@ if inputfilename[-2:]=='py':
 else:
     
     mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
-model='met'
+model='met'  #hard code
 sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of start time
 edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of end time
 for index_site in range(len(sites)):

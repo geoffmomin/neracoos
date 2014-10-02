@@ -27,7 +27,7 @@ if inputfilename[-2:]=='py':
 else:
     
     mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
-model='doppler'   
+model='doppler'   #hard codd
 sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of start time
 edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11,  17, 0, 0)) #get number type of end time
 depths,site_d,depth_index=depth_select_ADCP(sites,i_mindepth,i_maxdepth)
