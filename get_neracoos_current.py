@@ -5,17 +5,19 @@ Created on Mon May 20 13:19:21 2013
 @author: hxu
 """
 ####################################################
-#get surface current data from neracoos OpenDap,generate a df which includ time,lat,lon.current speed,current direction,u and v.
+####################################################
+#gets surface current data from neracoos OpenDap,generates a dataframe which includes time,lat,lon.temp and depth.
+#then ,plots a graph
+#Functions uses: get_neracoos_ctl, get_id_s_id_e_id_max_url, get_neracoos_current_data
+#input values: datetime period,the mooring type, the name of mooring site
+#output values: a data frame 
+####################################################
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
-from pylab import *
-import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import *
-pydir='../'
-sys.path.append(pydir)
 from neracoos_def import get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_current_data
 from get_neracoos_ctl import get_neracoos_ctl_py
 

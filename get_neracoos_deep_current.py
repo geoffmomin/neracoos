@@ -15,12 +15,9 @@ Created on Tue Jun  4 12:53:09 2013
 from matplotlib.dates import date2num, num2date
 import datetime as dt
 
-import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import *
-pydir='../'
-sys.path.append(pydir)
 from neracoos_def import get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_deep_current_data,depth_select_ADCP
 from get_neracoos_ctl import get_neracoos_ctl_py
 

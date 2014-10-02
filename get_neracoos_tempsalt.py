@@ -5,23 +5,20 @@ Created on Thu May 02 08:27:24 2013
 @author: Huanxin
 """
 ####################################################
-#get temp and salinity data from neracoos OpenDap,generate a df which includ time,lat,lon.depth and temperature.
+####################################################
+#get temp data from neracoos OpenDap,generate a dataframe which includes time,lat,lon.temp and depth.
+#then ,plots a graph
+#Functions uses: get_neracoos_ctl, get_id_s_id_e_id_max_url, depth_select, get_neracoos_temp_data
+#input values: datetime period,the mooring type, the name of mooring site
+#output values: a data frame 
+####################################################
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
-
-import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import *
-
-pydir='../'
-
-sys.path.append(pydir)
-
 from neracoos_def import get_neracoos_ctl,depth_select,get_id_s_id_e_id_max_url,get_neracoos_temp_data
-
- 
 from get_neracoos_ctl import get_neracoos_ctl_py
 
 inputfilename='./get_neracoos_ctl.txt'
@@ -30,7 +27,7 @@ if inputfilename[-2:]=='py':
 else:
     
     mindtime,maxdtime,i_mindepth,i_maxdepth,model,sites=get_neracoos_ctl(inputfilename) #get input from input file
-model='sbe37' 
+model='sbe37' #####This hard code to make sure you get temp and salt data
 sdtime_n=date2num(mindtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of start time
 edtime_n=date2num(maxdtime)-date2num(dt.datetime(1858, 11, 17, 0, 0)) #get number type of end time
 
@@ -83,7 +80,7 @@ for index_site in range(len(site_d)):
       fig, axes = plt.subplots(nrows=2, ncols=1)
     
       df_t=df.ix[:,[1]]  #creat a new df only for temp  
-      df_t.plot(ax=axes[0],title=site_d[index_site]+'   Depth='+depths[index_site]+'m')
+      df_t.plot(ax=axes[0],title=site_d[index_site]+'   Depth=-'+depths[index_site]+'m')
       plt.gcf().autofmt_xdate()
   
       df_s=df.ix[:,[2]]   #creat a new df only for salinity  

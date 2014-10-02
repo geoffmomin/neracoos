@@ -6,21 +6,18 @@ Created on Thu May 02 08:27:24 2013
 @author: Huanxin
 """
 ####################################################
-#get wind data from neracoos OpenDap,generate a df which includ time,lat,lon.current speed,current direction,depth.
-#according to datetime, it select current or his database
-#from that database gets depth','wind','direction
-#plot a graph
+#get wind data from neracoos OpenDap,generate a dataframe which includes time,lat,lon.current speed,current direction,depth.
+#then ,plots a graph
+#Functions uses: get_neracoos_ctl, get_id_s_id_e_id_max_url, get_neracoos_wind_data
+#input values: datetime period,the mooring type, the name of mooring site
+#output values: a data frame (wind rates and time)
 ####################################################
 from matplotlib.dates import date2num, num2date
 import datetime as dt
 
-import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from pandas import *
-pydir='../'
-#from matplotlib import dates
-sys.path.append(pydir)
 
 from neracoos_def import get_neracoos_ctl,get_id_s_id_e_id_max_url,get_neracoos_wind_data
 
@@ -82,7 +79,7 @@ for index_site in range(len(sites)):
         histvsreal=''
     if id_e0<>'':  
       (period_str,wind_all)=get_neracoos_wind_data(url,id_s,id_e0,id_max_url) #get data from web neracoos
-      df = DataFrame(np.array(wind_all),index=period_str,columns=['wind speed','direction'])
+      df = DataFrame(np.array(wind_all),index=period_str,columns=['wind speed(m/s)','direction(degree)'])
     else:
         print "According to your input, there is no data here"    
     if histvsreal<>'1':
@@ -93,7 +90,7 @@ for index_site in range(len(sites)):
         if id_e<>'':     
            (period_str,wind_all)=get_neracoos_wind_data(url,id_s,id_e,id_max_url)  #get data from web neracoos
            if id_e0=='':
-              df = DataFrame(np.array(wind_all),index=period_str,columns=['wind speed ','direction'])
+              df = DataFrame(np.array(wind_all),index=period_str,columns=['wind speed(m/s) ','direction(degree)'])
            else:              
               df = df.append(DataFrame(np.array(wind_all),index=period_str,columns=['wind speed','direction']))#combine them in DataFrame  
     #plt.subplot(2, 1, 1)   
