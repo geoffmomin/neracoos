@@ -3,7 +3,7 @@ neracoos
 
 This program is used for extracting NERACOOS  data . The user can extract data based on time period, geographic range, depth range, and/or type, name of sites.
 
-After running this program, you can obtain a file of data in same folder as this program. The file is named according to the date and time it was created.
+After running this program, you can obtain a file of data in same folder as this program. The file is named by the sites.
 
 How to use it:
 
