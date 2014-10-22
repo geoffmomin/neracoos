@@ -1,7 +1,7 @@
 [1 1 1 1]         The first line represent index of the following 5 line,'1' means picking,'0' means not.
 [2014,4,1,0,0;2014,4,14,23,59]         the 2nd line represent the period of date
 [met]   # represent the mooring type ,'met' for wind,'sbe' for temperature and salinity, 'aanderaa' for current
-[18,21]   the 4th line represent the range depth of sensor,  frist min,seconed max. (Ignored in wind case.) 
+[18,21]   the 4th line represent the range depth of sensor(meters),  frist min,seconed max. (Ignored in wind case.) 
 [A01]   # like  A01,F01  the 5th line represent the mooring, use "," to split
 
 
